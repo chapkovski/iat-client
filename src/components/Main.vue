@@ -45,6 +45,8 @@
 import { v4 as uuidv4 } from "uuid";
 import Q from "./Q.vue";
 import partial from "./Partial.vue";
+import {  getTime } from "date-fns";
+
 export default {
   components: {
     Q,
@@ -52,6 +54,10 @@ export default {
   },
   created() {
     window.addEventListener("keypress", this.hitButton);
+    this.currentQ = {
+      question: this.questions[this.qpointer].id,
+      shown: getTime(new Date()),
+    };
   },
   destroyed() {
     window.removeEventListener("keypress", this.hitButton);
@@ -71,18 +77,21 @@ export default {
       typeCorrespondance: { a: "left", s: "right" },
       questions: [
         {
+          id: 1,
           left: "Fat",
           right: "Slim",
           q: { type: "text", content: "hellow" },
           correct: "left",
         },
         {
+          id: 2,
           left: "NEW something here",
           right: "NEW something here on the right",
           q: { type: "text", content: "hodbuay" },
           correct: "right",
         },
         {
+          id: 3,
           left: "img desc left",
           right: "img desc right",
           q: {
@@ -94,6 +103,8 @@ export default {
         },
       ],
       qpointer: 0,
+      currentQ: {},
+      answers: [],
     };
   },
   computed: {
@@ -111,6 +122,17 @@ export default {
     },
     input_is_correct() {
       return this.right_answer === this.typeCorrespondance[this.currentKey];
+    },
+  },
+  watch: {
+    qpointer(newValue) {
+      this.currentQ = {
+        question: this.questions[newValue].id,
+        shown: getTime(new Date()),
+      };
+    },
+    currentQ() {
+      console.debug("QQQQ", JSON.stringify(this.answers));
     },
   },
   methods: {
@@ -131,8 +153,9 @@ export default {
         return;
       }
       if (this.input_is_correct) {
+        this.currentQ.answered = getTime(new Date());
+        this.answers.push(this.currentQ);
         this.qpointer = (this.qpointer + 1) % this.questions.length;
-        console.debug("QPOINTER", this.qpointer, this.questions.length);
       } else {
         this.error = true;
       }
