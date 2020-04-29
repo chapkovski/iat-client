@@ -21,4 +21,4 @@ name: Deploy to github pages
         - name: Run deploy script
           run: |
             git config user.name "chapkovski" && git config user.email "chapkovski@gmail.com"
-            npm run gh-pages-deploy
+            yarn deploy
