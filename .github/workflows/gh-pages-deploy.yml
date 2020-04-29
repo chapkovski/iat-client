@@ -11,7 +11,7 @@ jobs:
       - name: Setup Node.js for use with actions
         uses: actions/setup-node@v1.1.0
         with:
-          version:  12.x
+          version: 12.x
       - name: Checkout branch
         uses: actions/checkout@v2
 
@@ -20,5 +20,5 @@ jobs:
 
       - name: Run deploy script
         run: |
-          git config user.name "chapkovski" && git config user.email "chapkovski@gmail.com"
+          git config user.name "Your username" && git config user.email "your email"
           npm run gh-pages-deploy
