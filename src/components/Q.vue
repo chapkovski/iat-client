@@ -1,18 +1,23 @@
 <template>
   <div>
-   <h2>{{content}}</h2>
+    <h2 v-if="q.type === 'text'">{{ q.content }}</h2>
+    <img :src="q.content" alt="img" v-if="q.type === 'image'" height="300px" />
   </div>
 </template>
 
 <script>
+ 
 export default {
   props: {
-    content: String
-  }
-}
+    q: [String, Object],
+  },
+
+  computed: {
+    text_content() {
+      return false;
+    },
+  },
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang='scss'>
-
-</style>
+<style scoped lang="scss"></style>

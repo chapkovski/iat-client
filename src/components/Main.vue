@@ -1,9 +1,8 @@
 <template>
-  <b-container class="bv-example-row">
-    <b-row><h4>A NEWNEW YARN ACTION UPD</h4></b-row>
-    <b-row>
+  <b-container class="main-body">
+    <b-row class="main-row">
       <b-col><partial :content="left_content"></partial></b-col>
-      <b-col><Q :content="q_content"></Q></b-col>
+      <b-col><Q :q="q_content"></Q></b-col>
       <b-col><partial :content="right_content"></partial></b-col>
     </b-row>
     <b-row>
@@ -59,13 +58,23 @@ export default {
         {
           left: "Fat",
           right: "Slim",
-          q: "question content",
+          q: { type: "text", content: "hellow" },
           correct: "left",
         },
         {
           left: "NEW something here",
           right: "NEW something here on the right",
-          q: "NEW question content",
+          q: { type: "text", content: "hodbuay" },
+          correct: "right",
+        },
+        {
+          left: "img desc left",
+          right: "img desc right",
+          q: {
+            type: "image",
+            content:
+              "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Vladimir_Putin_%282020-02-20%29.jpg/1200px-Vladimir_Putin_%282020-02-20%29.jpg",
+          },
           correct: "right",
         },
       ],
@@ -100,6 +109,7 @@ export default {
       }
       if (this.input_is_correct) {
         this.qpointer = (this.qpointer + 1) % this.questions.length;
+        console.debug("QPOINTER", this.qpointer, this.questions.length);
       } else {
         this.error = true;
       }
@@ -130,6 +140,9 @@ export default {
 </script>
 
 <style lang="scss">
+.main-row {
+  height: 400px;
+}
 .flashing {
   animation: flash 0.05s;
 }
