@@ -1,9 +1,22 @@
 <template>
   <b-container class="main-body">
     <b-row class="main-row">
-      <b-col><partial :content="left_content"></partial></b-col>
+      <b-col
+        ><div
+          :class="{ flashing: flash_left }"
+          @animationend="flash_left = false"
+        >
+          <partial :content="left_content"></partial></div
+      ></b-col>
       <b-col><Q :q="q_content"></Q></b-col>
-      <b-col><partial :content="right_content"></partial></b-col>
+      <b-col>
+        <div
+          :class="{ flashing: flash_right }"
+          @animationend="flash_right = false"
+        >
+          <partial :content="right_content"></partial>
+        </div>
+      </b-col>
     </b-row>
     <b-row>
       <b-col>
@@ -50,6 +63,8 @@ export default {
       error: false,
       wrong_key_errors: [],
       animated: false,
+      flash_left: false,
+      flash_right: false,
       allowedKeys: ["a", "s"],
       maxToasts: 3,
       delay: 1000,
@@ -103,6 +118,14 @@ export default {
       this.error = false;
       this.currentKey = String.fromCharCode(e.keyCode).toLowerCase();
       this.animated = true;
+      switch (this.typeCorrespondance[this.currentKey]) {
+        case "left":
+          this.flash_left = true;
+          break;
+        case "right":
+          this.flash_right = true;
+          break;
+      }
       if (!this.allowedKeys.includes(this.currentKey)) {
         this.makeWrongLetterToast(this.currentKey);
         return;
@@ -144,7 +167,7 @@ export default {
   height: 400px;
 }
 .flashing {
-  animation: flash 0.05s;
+  animation: flash 0.1s;
 }
 
 @keyframes flash {
