@@ -1,6 +1,6 @@
 <template>
   <b-container class="bv-example-row">
-    <b-row><h4>NEW ACTION UPD</h4></b-row>
+    <b-row><h4>YARN ACTION UPD</h4></b-row>
     <b-row>
       <b-col><partial :content="left_content"></partial></b-col>
       <b-col><Q :content="q_content"></Q></b-col>
