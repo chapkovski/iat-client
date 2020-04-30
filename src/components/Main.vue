@@ -28,6 +28,29 @@
         ></div>
       </b-col>
     </b-row>
+    <b-row class="results" v-if="answers.length > 0">
+      <b-col>
+        <h4>Results:</h4>
+        <table class="results table">
+          <thead>
+            <tr>
+              <th>Answer</th>
+              <th>ID</th>
+              <th>Shown</th>
+              <th>Answered</th>
+              <th>Time to answer</th>
+            </tr>
+          </thead>
+          <tr v-for="(answer, idx) in answers.slice().reverse()" :key="idx">
+            <td>{{ idx }}</td>
+            <td>{{ answer.question }}</td>
+            <td>{{ formatDate(answer.shown) }}</td>
+            <td>{{ formatDate(answer.answered) }}</td>
+            <td>{{ formatTimeDiff(answer.answered, answer.shown) }}</td>
+          </tr>
+        </table>
+      </b-col>
+    </b-row>
     <b-row>
       <b-alert
         v-model="error"
@@ -45,7 +68,7 @@
 import { v4 as uuidv4 } from "uuid";
 import Q from "./Q.vue";
 import partial from "./Partial.vue";
-import {  getTime } from "date-fns";
+import { getTime, format, formatDistanceStrict } from "date-fns";
 
 export default {
   components: {
@@ -56,7 +79,7 @@ export default {
     window.addEventListener("keypress", this.hitButton);
     this.currentQ = {
       question: this.questions[this.qpointer].id,
-      shown: getTime(new Date()),
+      shown: new Date(),
     };
   },
   destroyed() {
@@ -128,7 +151,7 @@ export default {
     qpointer(newValue) {
       this.currentQ = {
         question: this.questions[newValue].id,
-        shown: getTime(new Date()),
+        shown: new Date(),
       };
     },
     currentQ() {
@@ -136,6 +159,12 @@ export default {
     },
   },
   methods: {
+    formatDate(t) {
+      return format(t,"yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+    },
+    formatTimeDiff(t1, t2) {
+      return formatDistanceStrict(t1, t2);
+    },
     hitButton(e) {
       this.error = false;
       this.currentKey = String.fromCharCode(e.keyCode).toLowerCase();
@@ -153,7 +182,9 @@ export default {
         return;
       }
       if (this.input_is_correct) {
-        this.currentQ.answered = getTime(new Date());
+        this.currentQ.answered = new Date();
+        this.currentQ.time_to_answer =
+          this.currentQ.answered - this.currentQ.shown;
         this.answers.push(this.currentQ);
         this.qpointer = (this.qpointer + 1) % this.questions.length;
       } else {
