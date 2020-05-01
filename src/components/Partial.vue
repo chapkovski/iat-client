@@ -14,13 +14,16 @@ export default {
     content: [String, Array],
   },
   watch: {
-    content(newVal) {
+    content: {
+      immediate: true,
+      handler: function(newVal){
       if (_.isArray(newVal)) {
         this.items = this.content;
       } else {
         this.items = [this.content];
       }
     },
+    }
   },
   data() {
     return {
