@@ -101,7 +101,7 @@ export default {
       questions: [
         {
           id: 1,
-          left: "Fat",
+          left: ['Bad', 'Christianity'],
           right: "Slim",
           q: { type: "text", content: "hellow" },
           correct: "left",
@@ -109,7 +109,7 @@ export default {
         {
           id: 2,
           left: "NEW something here",
-          right: "NEW something here on the right",
+           right: ['Good', 'Judaism'],
           q: { type: "text", content: "hodbuay" },
           correct: "right",
         },
