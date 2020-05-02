@@ -17,7 +17,10 @@ module.exports = {
             .plugin('BundleTracker')
             .use(BundleTracker, [{filename: './webpack-stats.json'}]);
 
-    }
+    },
+    devServer: {
+        disableHostCheck: true
+      }
 
 }
 

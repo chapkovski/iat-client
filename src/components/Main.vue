@@ -1,12 +1,14 @@
-<template>
-  <b-container class="main-body">
+<template >
+  <b-container class="main-body" >
     <b-row class="main-row">
-      <b-col>
+      <b-col >
         <div
           :class="{ flashing: flash_left }"
           @animationend="flash_left = false"
         >
           <partial
+            v-touch="()=>touchHandler('left')" 
+           
             :content="left_content"
             :controlledLetter="left_letter"
           ></partial>
@@ -19,6 +21,7 @@
           @animationend="flash_right = false"
         >
           <partial
+             v-touch="()=>touchHandler('right')" 
             :content="right_content"
             :controlledLetter="right_letter"
           ></partial>
@@ -35,7 +38,7 @@
         ></div>
       </b-col>
     </b-row>
-    <b-row class="results" v-if="answers.length > 0">
+    <b-row class="results"  v-if="answers.length > 0">
       <b-col>
         <h4>Results:</h4>
         <table class="results table">
@@ -75,7 +78,7 @@
 import { v4 as uuidv4 } from "uuid";
 import Q from "./Q.vue";
 import partial from "./Partial.vue";
-import { getTime, format, formatDistanceStrict } from "date-fns";
+import {  format, formatDistanceStrict } from "date-fns";
 
 export default {
   components: {
@@ -183,6 +186,12 @@ export default {
     },
   },
   methods: {
+    onClick(){console.debug("CLICK");this.$emit('leftEvent')},
+    touchHandler(side){ 
+      if (side === 'left') { this.hitButton({keyCode:97})}
+      if (side === 'right') { this.hitButton({keyCode:115})}
+      
+      },
     formatDate(t) {
       return format(t, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
     },
@@ -191,6 +200,7 @@ export default {
     },
     hitButton(e) {
       this.error = false;
+      console.debug('KEYCODE', e.keyCode)
       this.currentKey = String.fromCharCode(e.keyCode).toLowerCase();
       this.animated = true;
       switch (this.typeCorrespondance[this.currentKey]) {
