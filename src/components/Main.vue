@@ -18,7 +18,10 @@
           :class="{ flashing: flash_right }"
           @animationend="flash_right = false"
         >
-          <partial :content="right_content"  :controlledLetter="right_letter"></partial>
+          <partial
+            :content="right_content"
+            :controlledLetter="right_letter"
+          ></partial>
         </div>
       </b-col>
     </b-row>
@@ -111,29 +114,39 @@ export default {
       },
       questions: [
         {
-          id: 1,
-          left: ["Bad", "Christianity"],
-          right: "Slim",
-          q: { type: "text", content: "hellow" },
+          id: 0,
+          left: "Insect",
+          right: "Flower",
+          q: { type: "text", content: "Ant" },
           correct: "left",
         },
         {
+          id: 1,
+          left: "Insect",
+          right: "Flower",
+          q: { type: "text", content: "Orchid" },
+          correct: "right",
+        },
+        {
           id: 2,
-          left: "NEW something here",
-          right: ["Good", "Judaism"],
-          q: { type: "text", content: "hodbuay" },
+          left: "Insect",
+          right: "Flower",
+          q: { type: "text", content: "Violet" },
           correct: "right",
         },
         {
           id: 3,
-          left: "img desc left",
-          right: "img desc right",
-          q: {
-            type: "image",
-            content:
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Vladimir_Putin_%282020-02-20%29.jpg/1200px-Vladimir_Putin_%282020-02-20%29.jpg",
-          },
-          correct: "right",
+          left: "Insect",
+          right: "Flower",
+          q: { type: "text", content: "Wasp" },
+          correct: "left",
+        },
+        {
+          id: 4,
+          left: "Insect",
+          right: "Flower",
+          q: { type: "text", content: "Bee" },
+          correct: "left",
         },
       ],
       qpointer: 0,
