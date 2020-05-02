@@ -1,12 +1,13 @@
 <template >
   <b-container class="main-body" >
-    <b-row class="main-row">
-      <b-col >
+    <b-row class="main-row my-3 d-flex" cols-sm=3 cols=1>
+      <b-col  >
         <div
           :class="{ flashing: flash_left }"
           @animationend="flash_left = false"
         >
           <partial
+         
             v-touch="()=>touchHandler('left')" 
            
             :content="left_content"
@@ -38,7 +39,7 @@
         ></div>
       </b-col>
     </b-row>
-    <b-row class="results"  v-if="answers.length > 0">
+    <b-row class="results"  v-if="false">
       <b-col>
         <h4>Results:</h4>
         <table class="results table">
@@ -251,8 +252,16 @@ export default {
 </script>
 
 <style lang="scss">
+
+.main-body{
+ height: 100vh; 
+ background:yellow;
+ display:flex;
+ flex-direction: column;
+}
 .main-row {
-  height: 400px;
+  flex:1 1 auto;
+  // height: 400px;
 }
 .flashing {
   animation: flash 0.2s;

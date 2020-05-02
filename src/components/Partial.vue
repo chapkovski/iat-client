@@ -1,5 +1,5 @@
-<template>
-       <b-card header-tag="header">
+<template >
+       <b-card header-tag="header" class='partial'>
           <template v-slot:header>
             <h6 class="mb-0">Press <span class='font-weight-bold'>"{{ controlledLetter.toUpperCase() }}"</span> for</h6>
           </template>
@@ -39,4 +39,5 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.partial{cursor:pointer;}</style>
