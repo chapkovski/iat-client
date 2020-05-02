@@ -1,7 +1,8 @@
 <template >
        <b-card header-tag="header" class='partial'>
           <template v-slot:header>
-            <h6 class="mb-0">Press <span class='font-weight-bold'>"{{ controlledLetter.toUpperCase() }}"</span> for</h6>
+            <h6 class="mb-0" v-if='mobile'>Touch here for</h6>
+            <h6 class="mb-0" v-else>Press <span class='font-weight-bold'>"{{ controlledLetter.toUpperCase() }}"</span> for</h6>
           </template>
     <div v-for="(item, ind) in items" :key="ind">
       <div :class="styles[ind]">{{ item }}</div>
@@ -15,7 +16,8 @@ import _ from "lodash";
 export default {
   props: {
     content: [String, Array],
-    controlledLetter:String
+    controlledLetter:String,
+    mobile:Boolean,
   },
   watch: {
     content: {

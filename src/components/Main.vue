@@ -1,17 +1,16 @@
-<template >
-  <b-container class="main-body" >
-    <b-row class="main-row my-3 d-flex" cols-sm=3 cols=1>
-      <b-col  >
+<template>
+  <b-container class="main-body">
+    <b-row class="main-row my-3 d-flex" cols-sm="3" cols="1">
+      <b-col>
         <div
           :class="{ flashing: flash_left }"
           @animationend="flash_left = false"
         >
           <partial
-         
-            v-touch="()=>touchHandler('left')" 
-           
+            v-touch="() => touchHandler('left')"
             :content="left_content"
             :controlledLetter="left_letter"
+            :mobile="mobile"
           ></partial>
         </div>
       </b-col>
@@ -22,9 +21,10 @@
           @animationend="flash_right = false"
         >
           <partial
-             v-touch="()=>touchHandler('right')" 
+            v-touch="() => touchHandler('right')"
             :content="right_content"
             :controlledLetter="right_letter"
+            :mobile="mobile"
           ></partial>
         </div>
       </b-col>
@@ -39,7 +39,7 @@
         ></div>
       </b-col>
     </b-row>
-    <b-row class="results"  v-if="false">
+    <b-row class="results" v-if="false">
       <b-col>
         <h4>Results:</h4>
         <table class="results table">
@@ -79,8 +79,8 @@
 import { v4 as uuidv4 } from "uuid";
 import Q from "./Q.vue";
 import partial from "./Partial.vue";
-import {  format, formatDistanceStrict } from "date-fns";
-
+import { format, formatDistanceStrict } from "date-fns";
+import { isMobile } from "mobile-device-detect";
 export default {
   components: {
     Q,
@@ -101,6 +101,7 @@ export default {
       right_letter = "s";
     return {
       currentKey: "&nbsp;",
+      mobile: isMobile,
       show: true,
       error: false,
       wrong_key_errors: [],
@@ -187,12 +188,18 @@ export default {
     },
   },
   methods: {
-    onClick(){console.debug("CLICK");this.$emit('leftEvent')},
-    touchHandler(side){ 
-      if (side === 'left') { this.hitButton({keyCode:97})}
-      if (side === 'right') { this.hitButton({keyCode:115})}
-      
-      },
+    onClick() {
+      console.debug("CLICK");
+      this.$emit("leftEvent");
+    },
+    touchHandler(side) {
+      if (side === "left") {
+        this.hitButton({ keyCode: 97 });
+      }
+      if (side === "right") {
+        this.hitButton({ keyCode: 115 });
+      }
+    },
     formatDate(t) {
       return format(t, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
     },
@@ -201,7 +208,7 @@ export default {
     },
     hitButton(e) {
       this.error = false;
-      console.debug('KEYCODE', e.keyCode)
+      console.debug("KEYCODE", e.keyCode);
       this.currentKey = String.fromCharCode(e.keyCode).toLowerCase();
       this.animated = true;
       switch (this.typeCorrespondance[this.currentKey]) {
@@ -252,15 +259,14 @@ export default {
 </script>
 
 <style lang="scss">
-
-.main-body{
- height: 100vh; 
- background:yellow;
- display:flex;
- flex-direction: column;
+.main-body {
+  height: 100vh;
+  background: yellow;
+  display: flex;
+  flex-direction: column;
 }
 .main-row {
-  flex:1 1 auto;
+  flex: 1 1 auto;
   // height: 400px;
 }
 .flashing {
