@@ -1,20 +1,24 @@
 <template>
   <b-container class="main-body">
     <b-row class="main-row">
-      <b-col
-        ><div
+      <b-col>
+        <div
           :class="{ flashing: flash_left }"
           @animationend="flash_left = false"
         >
-          <partial :content="left_content"></partial></div
-      ></b-col>
+          <partial
+            :content="left_content"
+            :controlledLetter="left_letter"
+          ></partial>
+        </div>
+      </b-col>
       <b-col><Q :q="q_content"></Q></b-col>
       <b-col>
         <div
           :class="{ flashing: flash_right }"
           @animationend="flash_right = false"
         >
-          <partial :content="right_content"></partial>
+          <partial :content="right_content"  :controlledLetter="right_letter"></partial>
         </div>
       </b-col>
     </b-row>
@@ -86,6 +90,8 @@ export default {
     window.removeEventListener("keypress", this.hitButton);
   },
   data() {
+    const left_letter = "a",
+      right_letter = "s";
     return {
       currentKey: "&nbsp;",
       show: true,
@@ -94,14 +100,19 @@ export default {
       animated: false,
       flash_left: false,
       flash_right: false,
-      allowedKeys: ["a", "s"],
+      left_letter: left_letter,
+      right_letter: right_letter,
+      allowedKeys: [left_letter, right_letter],
       maxToasts: 3,
       delay: 1000,
-      typeCorrespondance: { a: "left", s: "right" },
+      typeCorrespondance: {
+        [left_letter]: "left",
+        [right_letter]: "right",
+      },
       questions: [
         {
           id: 1,
-          left: ['Bad', 'Christianity'],
+          left: ["Bad", "Christianity"],
           right: "Slim",
           q: { type: "text", content: "hellow" },
           correct: "left",
@@ -109,7 +120,7 @@ export default {
         {
           id: 2,
           left: "NEW something here",
-           right: ['Good', 'Judaism'],
+          right: ["Good", "Judaism"],
           q: { type: "text", content: "hodbuay" },
           correct: "right",
         },
@@ -160,7 +171,7 @@ export default {
   },
   methods: {
     formatDate(t) {
-      return format(t,"yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+      return format(t, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
     },
     formatTimeDiff(t1, t2) {
       return formatDistanceStrict(t1, t2);
@@ -221,18 +232,18 @@ export default {
   height: 400px;
 }
 .flashing {
-  animation: flash 0.1s;
+  animation: flash 0.2s;
 }
 
 @keyframes flash {
   0% {
-    background-color: none;
+    border: none;
   }
   50% {
-    background-color: green;
+    border: 1px solid red;
   }
   100% {
-    background-color: none;
+    border: none;
   }
 }
 </style>
