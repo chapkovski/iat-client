@@ -1,82 +1,65 @@
 <template>
-  <b-container class="main-body">
-    <b-row class="main-row my-3 d-flex" cols-sm="3" cols="1">
-      <b-col>
-        <div
-          :class="{ flashing: flash_left }"
-          @animationend="flash_left = false"
-        >
-          <partial
-            v-touch="() => touchHandler('left')"
-            :content="left_content"
-            :controlledLetter="left_letter"
-            :mobile="mobile"
-          ></partial>
+  <div class="main d-flex flex-column justify-content-center">
+    <b-toast
+      v-if="error"
+      id="error-toast"
+      :title="error_obj.title"
+      :variant="error_obj.variant"
+      toaster="b-toaster-bottom-left"
+      class="error-toast"
+      toast-class="error-toast"
+      :visible="true"
+    >
+      {{ error_obj.message }}
+    </b-toast>
+
+    <div class="main-row flex-fill d-flex flex-md-row flex-column">
+      <div class="left d-flex">
+        <div class="partial-content flex-fill d-flex flex-column">
+          <div
+            :class="{
+              flashing: flash_left,
+              card_wrapper: true,
+            }"
+            @animationend="flash_left = false"
+          >
+            <partial
+              class="flex-fill"
+              v-touch="() => touchHandler('left')"
+              :content="left_content"
+              :controlledLetter="left_letter"
+              :mobile="mobile"
+            ></partial>
+          </div>
         </div>
-      </b-col>
-      <b-col><Q :q="q_content"></Q></b-col>
-      <b-col>
-        <div
-          :class="{ flashing: flash_right }"
-          @animationend="flash_right = false"
-        >
-          <partial
-            v-touch="() => touchHandler('right')"
-            :content="right_content"
-            :controlledLetter="right_letter"
-            :mobile="mobile"
-          ></partial>
-        </div>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <div
-          class="alert alert-info"
-          :class="{ flashing: animated }"
-          @animationend="animated = false"
-          v-html="currentKey"
-        ></div>
-      </b-col>
-    </b-row>
-    <b-row class="results" v-if="false">
-      <b-col>
-        <h4>Results:</h4>
-        <table class="results table">
-          <thead>
-            <tr>
-              <th>Answer</th>
-              <th>ID</th>
-              <th>Shown</th>
-              <th>Answered</th>
-              <th>Time to answer</th>
-            </tr>
-          </thead>
-          <tr v-for="(answer, idx) in answers.slice().reverse()" :key="idx">
-            <td>{{ idx }}</td>
-            <td>{{ answer.question }}</td>
-            <td>{{ formatDate(answer.shown) }}</td>
-            <td>{{ formatDate(answer.answered) }}</td>
-            <td>{{ formatTimeDiff(answer.answered, answer.shown) }}</td>
-          </tr>
-        </table>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-alert
-        v-model="error"
-        class="position-fixed fixed-top m-0 rounded-0"
-        style="z-index: 2000;"
-        variant="danger"
-        dismissible
-        >Wrong answer!</b-alert
+      </div>
+      <div
+        class="q align-items-center d-flex flex-column justify-content-center flex-fill "
       >
-    </b-row>
-  </b-container>
+        <div class="q-body">
+          <Q :q="q_content"></Q>
+        </div>
+      </div>
+      <div class="right d-flex">
+        <div class="flex-fill">
+          <div
+            :class="{ flashing: flash_right }"
+            @animationend="flash_right = false"
+          >
+            <partial
+              v-touch="() => touchHandler('right')"
+              :content="right_content"
+              :controlledLetter="right_letter"
+              :mobile="mobile"
+            ></partial>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { v4 as uuidv4 } from "uuid";
 import Q from "./Q.vue";
 import partial from "./Partial.vue";
 import { format, formatDistanceStrict } from "date-fns";
@@ -104,7 +87,6 @@ export default {
       mobile: isMobile,
       show: true,
       error: false,
-      wrong_key_errors: [],
       animated: false,
       flash_left: false,
       flash_right: false,
@@ -160,6 +142,14 @@ export default {
     };
   },
   computed: {
+    error_obj() {
+      let msg = {};
+      if (this.currentKey && !this.allowedKeys.includes(this.currentKey)) {
+        msg = this.showWrongLetterToast();
+      } else if (!this.input_is_correct) msg = this.showErrorToast();
+
+      return msg;
+    },
     left_content() {
       return this.questions[this.qpointer].left;
     },
@@ -177,6 +167,14 @@ export default {
     },
   },
   watch: {
+    // error() {
+    //   if (this.currentKey && !this.allowedKeys.includes(this.currentKey)) {
+    //     this.showWrongLetterToast();
+    //     return;
+    //   }
+    //   if (!this.input_is_correct) this.showErrorToast();
+    // },
+
     qpointer(newValue) {
       this.currentQ = {
         question: this.questions[newValue].id,
@@ -188,9 +186,19 @@ export default {
     },
   },
   methods: {
-    onClick() {
-      console.debug("CLICK");
-      this.$emit("leftEvent");
+    showWrongLetterToast() {
+      return {
+        message: `This letter ${this.currentKey} is now allowed`,
+        title: "Attention!",
+        variant: "warning",
+      };
+    },
+    showErrorToast() {
+      return {
+        message: "Wrong asnwer",
+        title: "error!",
+        variant: "danger",
+      };
     },
     touchHandler(side) {
       if (side === "left") {
@@ -207,8 +215,8 @@ export default {
       return formatDistanceStrict(t1, t2);
     },
     hitButton(e) {
+      this.$bvToast.hide("error-toast");
       this.error = false;
-      console.debug("KEYCODE", e.keyCode);
       this.currentKey = String.fromCharCode(e.keyCode).toLowerCase();
       this.animated = true;
       switch (this.typeCorrespondance[this.currentKey]) {
@@ -219,8 +227,9 @@ export default {
           this.flash_right = true;
           break;
       }
-      if (!this.allowedKeys.includes(this.currentKey)) {
-        this.makeWrongLetterToast(this.currentKey);
+      if (this.wrong_letter || !this.input_is_correct) {
+        this.error = true;
+        this.$bvToast.show("error-toast");
         return;
       }
       if (this.input_is_correct) {
@@ -229,29 +238,6 @@ export default {
           this.currentQ.answered - this.currentQ.shown;
         this.answers.push(this.currentQ);
         this.qpointer = (this.qpointer + 1) % this.questions.length;
-      } else {
-        this.error = true;
-      }
-    },
-
-    makeWrongLetterToast() {
-      const newError = {
-        letter: this.currentKey,
-        visible: true,
-        id: uuidv4(),
-      };
-      this.wrong_key_errors.push(newError);
-      this.$bvToast.toast("This letter is not allowed", {
-        title: `You typed   ${newError.letter}`,
-        id: newError.id,
-        solid: true,
-        variant: "warning",
-        autoHideDelay: this.delay,
-        toaster: "b-toaster-bottom-left",
-      });
-      if (this.errors.length > this.maxToasts) {
-        const remEl = this.wrong_key_errors.shift();
-        this.$bvToast.hide(remEl.id);
       }
     },
   },
@@ -259,16 +245,20 @@ export default {
 </script>
 
 <style lang="scss">
-.main-body {
+.error-toast {
+  margin-bottom: 120px;
+}
+.main {
   height: 100vh;
-  background: yellow;
-  display: flex;
-  flex-direction: column;
+  background: gray;
 }
 .main-row {
-  flex: 1 1 auto;
-  // height: 400px;
+  background: yellow;
+  @media (min-width: 768px) {
+    max-height: 500px;
+  }
 }
+
 .flashing {
   animation: flash 0.2s;
 }
