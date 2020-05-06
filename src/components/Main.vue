@@ -183,8 +183,8 @@ export default {
   },
   methods: {
     handleResize() {
-      this.window.width = window.innerWidth;
-      this.window.height = window.innerHeight;
+      window.width = window.innerWidth;
+      window.height = window.innerHeight;
     },
     showWrongLetterToast() {
       return {
