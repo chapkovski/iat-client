@@ -14,7 +14,7 @@
       {{ error_obj.message }}
     </b-toast>
 
-    <div class="main-row flex-fill d-flex flex-md-row flex-column">
+    <div class="main-row flex-fill d-flex flex-md-row ">
       <div class="left d-flex">
         <div class="partial-content flex-fill d-flex flex-column">
           <div
@@ -76,12 +76,11 @@ export default {
       question: this.questions[this.qpointer].id,
       shown: new Date(),
     };
-    window.addEventListener('resize', this.handleResize);
-        this.handleResize();
-  
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
   },
   destroyed() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener("resize", this.handleResize);
     window.removeEventListener("keypress", this.hitButton);
   },
   data() {
@@ -172,7 +171,6 @@ export default {
     },
   },
   watch: {
-    
     qpointer(newValue) {
       this.currentQ = {
         question: this.questions[newValue].id,
@@ -184,10 +182,10 @@ export default {
     },
   },
   methods: {
-     handleResize() {
-            this.window.width = window.innerWidth;
-            this.window.height = window.innerHeight;
-        },
+    handleResize() {
+      this.window.width = window.innerWidth;
+      this.window.height = window.innerHeight;
+    },
     showWrongLetterToast() {
       return {
         message: `This letter ${this.currentKey} is now allowed`,
@@ -248,25 +246,29 @@ export default {
 
 <style lang="scss">
 .error-toast {
-   @media (min-height: 400px) {
+  @media (min-height: 400px) {
     margin-bottom: 120px;
   }
-   @media (orientation: landscape)  {
-     max-width:200px;
+  @media (orientation: landscape) {
+    max-width: 200px;
+  }
 }
- 
-}
-html, body, #app, .main {
+html,
+body,
+#app,
+.main {
   height: 100%;
   background: gray;
   display: flex;
   flex-flow: column;
-  
 }
 .main-row {
   background: yellow;
   @media (min-width: 768px) {
     max-height: 500px;
+  }
+  @media (max-width: 768px) and(orientation: portrait) {
+    flex-direction: column !important;
   }
 }
 
