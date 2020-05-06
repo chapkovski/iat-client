@@ -9,6 +9,7 @@
       class="error-toast"
       toast-class="error-toast"
       :visible="true"
+      no-auto-hide="true"
     >
       {{ error_obj.message }}
     </b-toast>
@@ -75,8 +76,12 @@ export default {
       question: this.questions[this.qpointer].id,
       shown: new Date(),
     };
+    window.addEventListener('resize', this.handleResize);
+        this.handleResize();
+  
   },
   destroyed() {
+    window.removeEventListener('resize', this.handleResize);
     window.removeEventListener("keypress", this.hitButton);
   },
   data() {
@@ -167,14 +172,7 @@ export default {
     },
   },
   watch: {
-    // error() {
-    //   if (this.currentKey && !this.allowedKeys.includes(this.currentKey)) {
-    //     this.showWrongLetterToast();
-    //     return;
-    //   }
-    //   if (!this.input_is_correct) this.showErrorToast();
-    // },
-
+    
     qpointer(newValue) {
       this.currentQ = {
         question: this.questions[newValue].id,
@@ -186,6 +184,10 @@ export default {
     },
   },
   methods: {
+     handleResize() {
+            this.window.width = window.innerWidth;
+            this.window.height = window.innerHeight;
+        },
     showWrongLetterToast() {
       return {
         message: `This letter ${this.currentKey} is now allowed`,
@@ -246,11 +248,20 @@ export default {
 
 <style lang="scss">
 .error-toast {
-  margin-bottom: 120px;
+   @media (min-height: 400px) {
+    margin-bottom: 120px;
+  }
+   @media (orientation: landscape)  {
+     max-width:200px;
 }
-.main {
-  height: 100vh;
+ 
+}
+html, body, #app, .main {
+  height: 100%;
   background: gray;
+  display: flex;
+  flex-flow: column;
+  
 }
 .main-row {
   background: yellow;
